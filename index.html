@@ -5,90 +5,140 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Centillion Clicker</title>
   <style>
+    /* General body styles */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: url('https://raw.githubusercontent.com/imanewborn/centillion-clicker/main/images/sci-fi-bg.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background-color: black;
       color: white;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       flex-direction: column;
       overflow: hidden;
-      font-family: 'Arial', sans-serif;
-      user-select: none; /* Prevent text selection */
-      text-align: center; /* Center text horizontally */
+      font-family: Arial, sans-serif;
+      background-image: url('https://github.com/imanewborn/centillion-clicker/raw/main/images/sci-fi-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      user-select: none; /* Disable text selection */
     }
 
-    h1 {
-      font-size: 10vw; /* Larger font size */
+    /* Title styles */
+    #title {
+      font-size: 6vw; /* Adjust font size for title */
+      font-weight: bold;
       text-align: center;
-      -webkit-text-stroke: 4px black; /* Apply black text stroke */
-      text-stroke: 4px black; /* Apply black text stroke */
-      color: white;
-      animation: colorChange 5s linear infinite; /* Gradual color change */
-      margin-top: 20px; /* Add space at the top */
-      position: absolute;
+      margin-top: 20px;
+      text-stroke: 1px black; /* 1px black stroke for the title */
+      -webkit-text-stroke: 1px black; /* For better compatibility */
+      z-index: 2; /* Ensure the title is above other content */
+      position: absolute; /* Make it fixed at the top */
       top: 20px;
-      width: 100%;
+      animation: rainbow 10s infinite linear, rotate 1s infinite alternate; /* 1s for faster rotation */
     }
 
-    #points, #resets, #cp {
+    /* Rainbow color animation for title */
+    @keyframes rainbow {
+      0% {
+        color: red;
+      }
+      14% {
+        color: orange;
+      }
+      28% {
+        color: yellow;
+      }
+      42% {
+        color: green;
+      }
+      57% {
+        color: blue;
+      }
+      71% {
+        color: indigo;
+      }
+      85% {
+        color: violet;
+      }
+      100% {
+        color: red;
+      }
+    }
+
+    /* Back-and-forth rotation animation */
+    @keyframes rotate {
+      0% {
+        transform: rotate(-5deg); /* Start at -5 degrees */
+      }
+      50% {
+        transform: rotate(5deg); /* Rotate to 5 degrees */
+      }
+      100% {
+        transform: rotate(-5deg); /* Return to -5 degrees */
+      }
+    }
+
+    /* Currency styles */
+    .currency {
+      font-size: 4vw; /* Adjust currency size */
       color: white;
       font-weight: bold;
       text-align: center;
-      width: 100%; /* Full width */
-      white-space: nowrap;
-      text-stroke: 4px black; /* Apply black text stroke */
-      -webkit-text-stroke: 4px black; /* Apply black text stroke for Webkit browsers */
-      overflow: hidden; /* Prevent overflow */
-      text-overflow: ellipsis; /* Add ellipsis when text overflows */
-      padding: 10px;
-      position: absolute;
-      font-size: 6vw; /* Set a larger font size for currencies */
+      margin: 10px 0;
+      -webkit-text-stroke: 2px black; /* Default stroke */
+      text-stroke: 2px black;
+      text-shadow: none; /* Remove unwanted shadow */
+      z-index: 1;
     }
 
-    #points {
-      top: 35vh; /* Move points further down */
+    .currency.cp {
+      color: orange; /* Centillion Prestige is orange */
     }
 
-    #resets {
-      top: 50vh; /* Move resets further down */
-      font-size: 5vw; /* Slightly smaller for CR */
-      color: red; /* Red for Centillion Resets (CR) */
+    .currency.cr {
+      color: red; /* Centillion Resets (CR) is red */
     }
 
-    #cp {
-      top: 65vh; /* Move CP further down */
-      font-size: 5vw; /* Slightly smaller for CP */
-      color: orange; /* Orange for Centillion Prestiges (CP) */
+    /* Media query for tablets and smaller screens */
+    @media screen and (max-width: 768px) {
+      #title {
+        font-size: 8vw; /* Increase size on smaller screens */
+        text-stroke: 3px black; /* Adjust stroke width */
+      }
+
+      .currency {
+        font-size: 6vw; /* Adjust currency font size */
+        -webkit-text-stroke: 1.5px black; /* Adjust stroke width */
+        text-stroke: 1.5px black;
+      }
     }
 
-    /* Animation for color change */
-    @keyframes colorChange {
-      0% { color: red; }
-      20% { color: orange; }
-      40% { color: yellow; }
-      60% { color: green; }
-      80% { color: blue; }
-      100% { color: purple; }
+    /* Media query for mobile devices */
+    @media screen and (max-width: 480px) {
+      #title {
+        font-size: 10vw; /* Even larger font size on mobile */
+        text-stroke: 2px black; /* Adjust stroke width */
+      }
+
+      .currency {
+        font-size: 7vw; /* Increase currency font size */
+        -webkit-text-stroke: 1px black; /* Adjust stroke width */
+        text-stroke: 1px black;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Centillion Clicker</h1>
-  <div id="points">Points: 1.00</div>
-  <div id="resets">Centillion Resets: 1</div>
-  <div id="cp">Centillion Prestiges: 1</div>
-
-  <audio id="clickSound" src="https://raw.githubusercontent.com/imanewborn/centillion-clicker/main/images/sci-fi-bg.jpg" preload="auto"></audio>
+  <div id="title">Centillion Clicker</div>
+  <div class="currency" id="points">Points: 1.00</div>
+  <div class="currency cr" id="resets">Centillion Resets: 1</div>
+  <div class="currency cp" id="cp">Centillion Prestiges: 1</div>
 
   <script>
     let points = 1;
     let resets = 1;
-    let centillionPrestiges = 1;
+    let cp = 1; // Centillion Prestige (CP) starts at 1
 
     const abbrevs = [
       '', 'K', 'M', 'B', 'T', 'Qd', 'Qn', 'Se', 'Sp', 'Oc', 'No', 'De',
@@ -103,6 +153,8 @@
       'Ng', 'UNg', 'DNg', 'TNg', 'QdNg', 'QnNg', 'SxNg', 'SpNg', 'OcNg', 'NoNg',
       'Ce'
     ];
+
+    const ONE_CE = 1e303; // 1Ce = 1 Centillion = 1e303
 
     function formatNumber(num) {
       if (num < 1000) return num.toFixed(2);
@@ -119,19 +171,36 @@
 
       pointsDiv.innerText = `Points: ${formatNumber(points)}`;
       resetsDiv.innerText = `Centillion Resets: ${formatNumber(resets)}`;
-      cpDiv.innerText = `Centillion Prestiges: ${formatNumber(centillionPrestiges)}`;
+      cpDiv.innerText = `Centillion Prestiges: ${formatNumber(cp)}`;
+    }
+
+    // Click sound
+    const clickSound = new Audio('https://github.com/imanewborn/centillion-clicker/raw/main/sounds/click_001.ogg');
+
+    function playClickSound() {
+      clickSound.currentTime = 0; // Restart the sound if it's already playing
+      clickSound.play();
     }
 
     function clickHandler() {
-      const clickSound = document.getElementById('clickSound');
-      points *= 2 * resets * centillionPrestiges;
-      if (isNaN(points) || formatNumber(points).endsWith('Ce') && parseFloat(points.toExponential().split('e')[1]) >= 303) {
-        points = 1;
-        resets *= 2;
-        centillionPrestiges *= 2;
+      points *= 2 * resets;
+
+      if (points >= ONE_CE || isNaN(points)) {
+        points = 1; // Reset points to 1 if they surpass 1Ce or become NaN
+        resets *= 2; // Double the resets
       }
-      clickSound.currentTime = 0;
-      clickSound.play();
+
+      // Double CR when points surpass 1Ce (1e303)
+      if (points >= ONE_CE) {
+        resets *= 2;
+      }
+
+      // Double CP when CR surpasses 1Ce (1e303)
+      if (resets >= ONE_CE) {
+        cp *= 2;
+      }
+
+      playClickSound();
       updateDisplay();
     }
 
@@ -140,3 +209,4 @@
   </script>
 </body>
 </html>
+
