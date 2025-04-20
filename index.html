@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centillion Clicker</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('images/sci-fi-bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      user-select: none; /* Prevent text selection */
+      text-align: center; /* Center text horizontally */
+    }
+
+    h1 {
+      font-size: 10vw; /* Larger font size */
+      text-align: center;
+      -webkit-text-stroke: 4px black; /* Apply black text stroke */
+      text-stroke: 4px black; /* Apply black text stroke */
+      color: white;
+      animation: colorChange 5s linear infinite; /* Gradual color change */
+      margin-top: 20px; /* Add space at the top */
+      position: absolute;
+      top: 20px;
+      width: 100%;
+    }
+
+    #points, #resets, #cp {
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      width: 100%; /* Full width */
+      white-space: nowrap;
+      text-stroke: 4px black; /* Apply black text stroke */
+      -webkit-text-stroke: 4px black; /* Apply black text stroke for Webkit browsers */
+      overflow: hidden; /* Prevent overflow */
+      text-overflow: ellipsis; /* Add ellipsis when text overflows */
+      padding: 10px;
+      position: absolute;
+      font-size: 6vw; /* Set a larger font size for currencies */
+    }
+
+    #points {
+      top: 35vh; /* Move points further down */
+    }
+
+    #resets {
+      top: 50vh; /* Move resets further down */
+      font-size: 5vw; /* Slightly smaller for CR */
+      color: red; /* Red for Centillion Resets (CR) */
+    }
+
+    #cp {
+      top: 65vh; /* Move CP further down */
+      font-size: 5vw; /* Slightly smaller for CP */
+      color: orange; /* Orange for Centillion Prestiges (CP) */
+    }
+
+    /* Animation for color change */
+    @keyframes colorChange {
+      0% { color: red; }
+      20% { color: orange; }
+      40% { color: yellow; }
+      60% { color: green; }
+      80% { color: blue; }
+      100% { color: purple; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Centillion Clicker</h1>
+  <div id="points">Points: 1.00</div>
+  <div id="resets">Centillion Resets: 1</div>
+  <div id="cp">Centillion Prestiges: 1</div>
+
+  <audio id="clickSound" src="sounds/click_001.ogg" preload="auto"></audio>
+
+  <script>
+    let points = 1;
+    let resets = 1;
+    let centillionPrestiges = 1;
+
+    const abbrevs = [
+      '', 'K', 'M', 'B', 'T', 'Qd', 'Qn', 'Se', 'Sp', 'Oc', 'No', 'De',
+      'UDe', 'DDe', 'TDe', 'QdDe', 'QnDe', 'SxDe', 'SpDe', 'OcDe', 'NoDe', 'Vg',
+      'UVt', 'DVt', 'TVt', 'QdVt', 'QnVt', 'SxVt', 'SpVt', 'OcVt', 'NoVt',
+      'Tr', 'UTr', 'DTr', 'TTr', 'QdTr', 'QnTr', 'SxTr', 'SpTr', 'OcTr', 'NoTr',
+      'Qa', 'UQa', 'DQa', 'TQa', 'QdQa', 'QnQa', 'SxQa', 'SpQa', 'OcQa', 'NoQa',
+      'Qi', 'UQi', 'DQi', 'TQi', 'QdQi', 'QnQi', 'SxQi', 'SpQi', 'OcQi', 'NoQi',
+      'Sa', 'USa', 'DSa', 'TSa', 'QdSa', 'QnSa', 'SxSa', 'SpSa', 'OcSa', 'NoSa',
+      'Si', 'USi', 'DSi', 'TSi', 'QdSi', 'QnSi', 'SxSi', 'SpSi', 'OcSi', 'NoSi',
+      'Og', 'UOg', 'DOg', 'TOg', 'QdOg', 'QnOg', 'SxOg', 'SpOg', 'OcOg', 'NoOg',
+      'Ng', 'UNg', 'DNg', 'TNg', 'QdNg', 'QnNg', 'SxNg', 'SpNg', 'OcNg', 'NoNg',
+      'Ce'
+    ];
+
+    function formatNumber(num) {
+      if (num < 1000) return num.toFixed(2);
+      let tier = Math.floor(Math.log10(num) / 3);
+      let suffix = abbrevs[tier];
+      let scaled = num / Math.pow(10, tier * 3);
+      return scaled.toFixed(2) + suffix;
+    }
+
+    function updateDisplay() {
+      const pointsDiv = document.getElementById("points");
+      const resetsDiv = document.getElementById("resets");
+      const cpDiv = document.getElementById("cp");
+
+      pointsDiv.innerText = `Points: ${formatNumber(points)}`;
+      resetsDiv.innerText = `Centillion Resets: ${formatNumber(resets)}`;
+      cpDiv.innerText = `Centillion Prestiges: ${formatNumber(centillionPrestiges)}`;
+    }
+
+    function clickHandler() {
+      const clickSound = document.getElementById('clickSound');
+      points *= 2 * resets * centillionPrestiges;
+      if (isNaN(points) || formatNumber(points).endsWith('Ce') && parseFloat(points.toExponential().split('e')[1]) >= 303) {
+        points = 1;
+        resets *= 2;
+        centillionPrestiges *= 2;
+      }
+      clickSound.currentTime = 0;
+      clickSound.play();
+      updateDisplay();
+    }
+
+    window.addEventListener("click", clickHandler);
+    updateDisplay();
+  </script>
+</body>
+</html>
